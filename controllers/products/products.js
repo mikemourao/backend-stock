@@ -55,3 +55,23 @@ export const deleteProduct = (req, res) => {
         return res.status(200).json("Deletado com Sucesso.");
     });
 };
+
+export const getProductById = (req, res) => {
+    const productId = req.query.id; // Obtém o ID da query
+
+    if (!productId) {
+        return res.status(400).json("ID do produto não fornecido na query.");
+    }
+
+    const q = "SELECT * FROM products WHERE id = ?";
+
+    db.query(q, [productId], (err, data) => {
+        if (err) return res.json(err);
+
+        if (data.length === 0) {
+            return res.status(404).json("Produto não encontrado.");
+        }
+
+        return res.status(200).json(data[0]); // Retorna o primeiro resultado encontrado (deve ser único)
+    });
+};
