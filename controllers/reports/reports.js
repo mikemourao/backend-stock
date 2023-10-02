@@ -16,7 +16,20 @@ export const getProductById = (req, res) => {
             return res.status(404).json("Produto não encontrado.");
         }
         
-        const manufacturingCost = (data[0].cost / 50)
+        if (data[0].type === "Normal") {
+            const manufacturingCost = (data[0].cost / 50 /* ajustar de acordo com a quantidade que dá pra produzir */)
+            const newData = [{
+                id: data[0].id,
+                product_name: data[0].product_name,
+                type: data[0].type,
+                cost: data[0].cost,
+                size: data[0].size,
+                manufacturing_cost: manufacturingCost
+            }]
+            return res.status(200).json(newData); // Retorna o resultado encontrado com novo valor de manufacturing_cost
+        }
+
+        const manufacturingCost = (data[0].cost / 10 /* ajustar de acordo com a quantidade que dá pra produzir */)
         const newData = [{
             id: data[0].id,
             product_name: data[0].product_name,
