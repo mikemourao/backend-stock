@@ -41,7 +41,7 @@ export const getProductById = (req, res) => {
             const returnGlue = checkKeyword(myString, myKeyWordsGlue);
 
             
-            const manufacturingCost = (data[0].cost / (returnTape ? 10 : returnPaper ? 50 : returnGlue ? 100 : 20))
+            const manufacturingCost = (data[0].cost / (returnTape ? 40 : returnPaper ? 50 : returnGlue ? 100 : 20))
             const newData = [{
                 id: data[0].id,
                 product_name: data[0].product_name,
@@ -75,7 +75,7 @@ export const getProductById = (req, res) => {
         const returnPaper = checkKeyword(myString, myKeyWordsPaper);
         const returnGlue = checkKeyword(myString, myKeyWordsGlue);
         
-        const manufacturingCost = (data[0].cost / (returnTape ? 10 : returnPaper ? 50 : returnGlue ? 100 : 20))
+        const manufacturingCost = (data[0].cost / (returnTape ? 40 : returnPaper ? 50 : returnGlue ? 100 : 20))
         const newData = [{
             id: data[0].id,
             product_name: data[0].product_name,
