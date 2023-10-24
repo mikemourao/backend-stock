@@ -88,3 +88,21 @@ export const getProductById = (req, res) => {
         return res.status(200).json(newData);
     });
 };
+
+export const addReport = (req, res) => {
+    const q =
+     "INSERT INTO reports (`report_name`, `created_at`, `product_name`, `budget`) VALUES(?)";
+
+    const values = [
+        req.body.report_name,
+        req.body.created_at,
+        req.body.product_name,
+        req.body.budget
+    ];
+
+    db.query(q, [values], (err) => {
+        if(err) return res.json(err);
+
+        return res.status(200).json("Salvo com Sucesso.");
+    });
+}
