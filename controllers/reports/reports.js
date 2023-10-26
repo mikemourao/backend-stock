@@ -91,18 +91,30 @@ export const getProductById = (req, res) => {
 
 export const addReport = (req, res) => {
     const q =
-     "INSERT INTO reports (`report_name`, `created_at`, `product_name`, `budget`) VALUES(?)";
+     "INSERT INTO reports (`report_name`, `product_name`, `budget`, `qtde`, `created_at`) VALUES(?, ?, ?, ?, NOW())";
+    // Converta a matriz de objetos em uma string JSON
+    const productNameJSON = JSON.stringify(req.body.product_name);
 
     const values = [
         req.body.report_name,
-        req.body.created_at,
-        req.body.product_name,
-        req.body.budget
+        productNameJSON,
+        req.body.budget,
+        req.body.qtde,
     ];
-
-    db.query(q, [values], (err) => {
+    
+    db.query(q, values, (err) => {
         if(err) return res.json(err);
 
         return res.status(200).json("Salvo com Sucesso.");
     });
-}
+};
+
+export const getReports = (_, res) => {
+    const q = "SELECT * FROM reports";
+
+    db.query(q, (err, data) => {
+        if (err) return res.json(err);
+        
+        return res.status(200).json(data);
+    });
+};
