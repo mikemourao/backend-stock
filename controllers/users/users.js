@@ -1,53 +1,62 @@
 import { db } from "../../db.js";
+import jwt from 'jsonwebtoken';
+
+const secretKey = 'seuSegredo'; // Substitua isso por uma chave secreta forte em um ambiente de produção
 
 export const getUsers = (_, res) => {
     const q = "SELECT * FROM user";
 
     db.query(q, (err, data) => {
         if (err) return res.json(err);
-        
+
         return res.status(200).json(data);
     });
 };
 
 export const addUser = (req, res) => {
+    const { name, password } = req.body;
+
+    // Criptografar a senha usando JWT
+    const token = jwt.sign({ name, password }, secretKey);
+
     const q =
-     "INSERT INTO user (`name`, `password`) VALUES(?)";
+        "INSERT INTO user (`name`, `password`, `token`) VALUES(?, ?, ?)";
 
     const values = [
-        req.body.name,
-        req.body.password
+        name,
+        password,
+        token
     ];
 
-    db.query(q, [values], (err) => {
-        if(err) return res.json(err);
+    db.query(q, values, (err) => {
+        if (err) return res.json(err);
 
-        return res.status(200).json("Cadastrado com Sucesso.");
+        return res.status(200).json({ message: "Cadastrado com Sucesso.", token });
     });
 };
 
-export const updateUser = (req, res) => {
-    const q =
-     "UPDATE user SET `name` = ?, `password` = ? WHERE `id` = ?";
+export const login = (req, res) => {
+    const { name, password } = req.query;
+    
+    // Verificar o usuário e o token
+    const q = "SELECT * FROM user WHERE `name` = ? AND `password` = ?";
+    const values = [name, password];
+    
+    db.query(q, values, (err, data) => {
+        if (err) return res.json(err);
 
-    const values = [
-        req.body.name,
-        req.body.password
-    ];
+        if (data.length === 0) {
+            return res.status(401).json({ message: "Usuário ou senha incorretos." });
+        }
 
-    db.query(q, [...values, req.params.id], (err) => {
-        if(err) return res.json(err);
+        // Verificar o token usando JWT
+        const storedToken = data[0].token;
+        jwt.verify(storedToken, secretKey, (verifyErr) => {
+            if (verifyErr) {
+                return res.status(401).json({ message: "Token inválido." });
+            }
 
-        return res.status(200).json("Atualizado com Sucesso.");
-    });
-};
-
-export const deleteUser = (req, res) => {
-    const q = "DELETE FROM user WHERE `id` = ?";
-
-    db.query(q, [req.params.id], (err) => {
-        if(err) return res.json(err);
-
-        return res.status(200).json("Deletado com Sucesso.");
+            return res.status(200).json({ message: "Login bem-sucedido." });
+        });
     });
 };

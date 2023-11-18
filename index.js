@@ -6,8 +6,9 @@ import reportsRoutes from "./routes/reports/reports.js";
 
 const app = express();
 
+// Use o parser integrado do express
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
 
 app.use("/", userRoutes);
 app.use("/", productRoutes);
