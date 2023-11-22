@@ -56,7 +56,7 @@ export const login = (req, res) => {
                 return res.status(401).json({ message: "Token inválido." });
             }
 
-            return res.status(200).json({ message: "Login bem-sucedido." });
+            return res.status(200).json({ message: "Login bem-sucedido.", data });
         });
     });
 };
