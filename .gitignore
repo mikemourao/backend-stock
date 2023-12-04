@@ -1,0 +1,7 @@
+# .gitignore
+
+# Ignorar o arquivo yarn.lock
+yarn.lock
+
+# Ignorar o arquivo package-lock.json
+package-lock.json
